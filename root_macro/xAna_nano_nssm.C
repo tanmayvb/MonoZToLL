@@ -1,6 +1,7 @@
 // example code to run 2016 NSSM MC X->Y+H samples
 // .L xAna_nano_nssm.C++
 // xAna_nano_nssm("test.root")
+// example root file is at /afs/cern.ch/work/s/syu/public/forTiKai/nssm_nano.root
 
 #include <vector>
 #include <iostream>
