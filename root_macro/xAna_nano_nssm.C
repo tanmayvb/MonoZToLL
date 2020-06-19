@@ -20,7 +20,7 @@ void xAna_nano_nssm(std::string inputFile){
 
   Long64_t nTotal=0;
   Long64_t nPass[20]={0};
-
+  TH1F* heve=new TH1F("heve","",1,0.5,1.5);
 
   for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
 
@@ -29,7 +29,7 @@ void xAna_nano_nssm(std::string inputFile){
 
     data.GetEntry(jEntry);
     nTotal++;
-
+    heve->Fill(1.);
     //1. trigger 
 
     Bool_t passTrigger=false;
@@ -101,5 +101,11 @@ void xAna_nano_nssm(std::string inputFile){
 
   for(int i=0;i<20;i++)
     if(nPass[i]>0)cout << "nPass["<<i<<"]= " << nPass[i] << endl;
+
+  // writing example output file
+  TFile* outFile = new TFile("histo.root","recreate");
+  heve->Write();
+  outFile->Close();
+  
   
 } // end of macro
