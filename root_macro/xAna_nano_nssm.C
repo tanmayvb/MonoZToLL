@@ -1,6 +1,6 @@
 // example code to run 2016 NSSM MC X->Y+H samples
 // .L xAna_nano_nssm.C++
-// xAna_nano_nssm("test.root")
+// xAna_nano_nssm("test.root") or xAna_nano_nssm("input.txt")
 // example root file is at /afs/cern.ch/work/s/syu/public/forTiKai/nssm_nano.root
 
 #include <vector>
@@ -13,11 +13,33 @@
 #include <TLorentzVector.h>
 
 using namespace std;
-void xAna_nano_nssm(std::string inputFile){
+void xAna_nano_nssm(std::string filename){
 
-  //get TTree from file ...
-  TreeReader data(inputFile.data(),"Events");
+  std::vector<std::string> inputFiles;
 
+  // check first if this is a root file
+  if(filename.find(".root")!=string::npos)
+    {
+      cout << "This is a single input root file" << endl;
+      inputFiles.push_back(filename);
+    }
+  else // assume this is a text file
+    {
+      cout << "This is a text file " << endl;
+      ifstream fin;
+      fin.open(filename.data());
+      string temp;
+      fin >> temp;
+      while(!fin.eof())
+	{
+	  inputFiles.push_back(temp);
+	  fin >> temp;
+	}
+      cout << "There are " << inputFiles.size() << " files" << endl;
+    }
+  
+  //get TTree from file ...  
+  TreeReader data(inputFiles,"Events");
   Long64_t nTotal=0;
   Long64_t nPass[20]={0};
   TH1F* heve=new TH1F("heve","",1,0.5,1.5);
