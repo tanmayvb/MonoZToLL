@@ -36,6 +36,8 @@ void xAna_nano_nssm(std::string filename){
 	  fin >> temp;
 	}
       cout << "There are " << inputFiles.size() << " files" << endl;
+      for(unsigned int ifile=0; ifile < inputFiles.size(); ifile++)
+	cout << "Input file " << ifile << " is " << inputFiles[ifile] << endl;
     }
   
   //get TTree from file ...  
