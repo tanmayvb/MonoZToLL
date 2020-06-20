@@ -13,7 +13,7 @@
 #include <TLorentzVector.h>
 
 using namespace std;
-void xAna_nano_nssm(std::string filename){
+void xAna_nano_nssm(std::string filename, std::string outputFileName="histo.root"){
 
   std::vector<std::string> inputFiles;
 
@@ -39,6 +39,7 @@ void xAna_nano_nssm(std::string filename){
       for(unsigned int ifile=0; ifile < inputFiles.size(); ifile++)
 	cout << "Input file " << ifile << " is " << inputFiles[ifile] << endl;
     }
+  cout << "Output file name is " << outputFileName << endl;
   
   //get TTree from file ...  
   TreeReader data(inputFiles,"Events");
@@ -127,7 +128,7 @@ void xAna_nano_nssm(std::string filename){
     if(nPass[i]>0)cout << "nPass["<<i<<"]= " << nPass[i] << endl;
 
   // writing example output file
-  TFile* outFile = new TFile("histo.root","recreate");
+  TFile* outFile = new TFile(outputFileName.data(),"recreate");
   heve->Write();
   outFile->Close();
   
