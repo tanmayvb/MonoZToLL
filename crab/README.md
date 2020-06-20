@@ -1,8 +1,9 @@
 # How to submit NanoAOD analysis jobs using CRAB
 
 ## Create a CMSSW work area and download NanoAODTools
+log on to lxplus7 machine and go to your AFS work area at /afs/cern.ch/work/
 ```
-cmsrel CMSSW_10_2_18/src
+cmsrel CMSSW_10_2_18
 cd CMSSW_10_2_18/src
 cmsenv
 git cms-init   
