@@ -45,7 +45,16 @@ void xAna_nano_nssm(std::string filename, std::string outputFileName="histo.root
   TreeReader data(inputFiles,"Events");
   Long64_t nTotal=0;
   Long64_t nPass[20]={0};
-  TH1F* heve=new TH1F("heve","",1,0.5,1.5);
+  const unsigned int nLabels=21;
+  TH1F* heve=new TH1F("heve","",nLabels,-0.5,20.5);
+  heve->SetYTitle("Number of Events");
+  heve->LabelsOption("v");
+  
+  const char *label[nLabels];
+  label[0]="Total";
+  for(unsigned int i=1; i< nLabels; i++){
+    label[i] = Form("Cut %d",i);
+  }
 
   for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
 
@@ -54,7 +63,7 @@ void xAna_nano_nssm(std::string filename, std::string outputFileName="histo.root
 
     data.GetEntry(jEntry);
     nTotal++;
-    heve->Fill(1.);
+    heve->Fill(label[0],1.);
     //1. trigger 
 
     Bool_t passTrigger=false;
@@ -79,6 +88,7 @@ void xAna_nano_nssm(std::string filename, std::string outputFileName="histo.root
 
     if(!passTrigger)continue;
     nPass[0]++;
+    heve->Fill(label[1],1.);
 
     // loop over fatjets
     Float_t*  FatJet_pt = data.GetPtrFloat("FatJet_pt");
@@ -118,6 +128,8 @@ void xAna_nano_nssm(std::string filename, std::string outputFileName="histo.root
 
     if(nGoodPair<1)continue;
     nPass[1]++;
+    heve->Fill(label[2],1.);
+
     
 
   } // end of loop over events
