@@ -28,6 +28,8 @@ rm -rf XtoYH
 Modify your favorite storage site, dataset, directory name in crab_cfg.py
 Note, the T2 and T3 sites at Taiwan sometimes have corrupted files.
 Although the jobs finish properly, some root files cannot be opened.
+Sometimes it also takes a long time to transfer files from the woring tiers to
+Taiwan tiers.
 ```
 source /cvmfs/cms.cern.ch/crab3/crab_standalone.sh
 cmsenv
@@ -35,7 +37,10 @@ voms-proxy-init -voms cms
 crab submit crab_cfg.py
 ```
 
-Check the status vis crab status -d <directoryName>
+Check the status via
+```
+crab status -d <directoryName>
+```
 
 ## Get job output
 Open another terminal
