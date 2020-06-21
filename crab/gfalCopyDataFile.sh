@@ -1,20 +1,29 @@
 #!/bin/bash
 
 scriptname=`basename $0`
-EXPECTED_ARGS=4
+EXPECTED_ARGS=5
 
 userid="syu"
+specify=0
 
-if [ $# -eq $(( EXPECTED_ARGS - 1 )) ]
+if [ $# -eq $(( EXPECTED_ARGS - 2 )) ]
 then
     echo "user ID is set to "$userid
+    echo "no specified subdirectories"
+else if [ $# -eq $(( EXPECTED_ARGS - 1 )) ]
+then
+    echo "no specified subdirectories"
+    userid=$4
 else if [ $# -ne $EXPECTED_ARGS ]
 then
-    echo "Usage: ./$scriptname remoteDirectoryString string grid userid"
-    echo "Example: ./$scriptname JetHT NCUGlobal ncu/nchc/cern syu"
+    echo "Usage: ./$scriptname remoteDirectoryString string grid userid subdir"
+    echo "Example: ./$scriptname JetHT NCUGlobal ncu/nchc/cern syu 200620_153506"
     exit 1
 else 
+    specify=1
     userid=$4
+    subdir=$5
+fi
 fi
 fi
 
@@ -77,17 +86,42 @@ do
     ## Now check the subdirectories, if more than one is created, all directories will be included
 	iter3=0
 	nfiles3=`cat $file3 | wc -l`
-	while [ $iter3 -lt $nfiles3 ]; 
-	do
-	    iter3=$(( iter3 + 1 ))
-	    input3=(`head -n $iter3 $file3  | tail -1`)
-	    echo $input3
-	    dir3=$dir2/$input3
-	    file4=dir4\_${iteration}\_${iter2}\_${iter3}.txt
+
+	#if no specific subdirectory is indicated
+	if [ $(( specify )) -eq 0 ]
+	then
+	    while [ $iter3 -lt $nfiles3 ]; 
+	    do
+		iter3=$(( iter3 + 1 ))
+		input3=(`head -n $iter3 $file3  | tail -1`)
+		echo $input3
+		dir3=$dir2/$input3
+		file4=dir4\_${iteration}\_${iter2}\_${iter3}.txt
+		echo $dir3
+		gfal-ls $dir3 > $file4
+
+		## Now List the files
+		iter4=0
+		nfiles4=`cat $file4 | wc -l`
+		while [ $iter4 -lt $nfiles4 ]; 
+		do
+		    iter4=$(( iter4 + 1 ))
+		    input4=(`head -n $iter4 $file4  | tail -1`)
+		    echo $input4
+		    dir4=$dir3/$input4
+		    echo $dir4
+		    gfal-ls $dir4 ##  This line is added so that the response of gfal-ls will be fast when writing output to a text file
+		    gfal-ls $dir4 | grep -a $string | awk -v my_var=$dir4 '{print my_var"/"$1}' >> $output
+		done
+	    
+	    done
+	 else #if specified a directory
+	    dir3=$dir2/$subdir
+	    file4=dir4\_${iteration}\_${iter2}.txt
 	    echo $dir3
 	    gfal-ls $dir3 > $file4
 
-       ## Now List the files
+	    ## Now List the files
 	    iter4=0
 	    nfiles4=`cat $file4 | wc -l`
 	    while [ $iter4 -lt $nfiles4 ]; 
@@ -100,11 +134,9 @@ do
 		gfal-ls $dir4 ##  This line is added so that the response of gfal-ls will be fast when writing output to a text file
 		gfal-ls $dir4 | grep -a $string | awk -v my_var=$dir4 '{print my_var"/"$1}' >> $output
 	    done
-	    
-	done
 
+	fi
     done
-
 done
 
 while read line;

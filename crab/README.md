@@ -51,8 +51,13 @@ voms-proxy-init -voms cms
 crab getoutput -d <directoryName>
 ```
 
-If crab getoutput doesn't work somehow, you need to open a new terminal and run the script ./gfalListDataFile.sh
+If crab getoutput doesn't work somehow, you need to open a new terminal and run the script ./gfalListDataFile.sh. But note directories at Tier 2 or Tier 3 from old jobs must be removed first before running this script. Otherwise, you must specify the subdirectory corresponding to your job. For example, 
 ```
 voms-proxy-init -voms cms
-./gfalCopyDataFile.sh NMSSM_XToYHTo4b_MX-1000_TuneCUETP8M1_13TeV-madgraph-pythia8 histo nchc syu
+./gfalCopyDataFile.sh NMSSM_XToYHTo4b_MX-1000_TuneCUETP8M1_13TeV-madgraph-pythia8 histo nchc syu 200620_153506
+```
+One could also use xrdcp command to copy the whole directories if you know the path. For example
+```
+xrdcp -r root://se01.grid.nchc.org.tw//dpm/grid.nchc.org.tw/home/cms/store/user/syu/NMSSM_XToYHTo4b_MX-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/NanoTestPost/200620_153506 .
+
 ```
