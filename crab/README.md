@@ -47,7 +47,12 @@ Open another terminal
 ```
 cd CMSSW_10_2_18/src/PhysicsTools/NanoAODTools/crab
 source /cvmfs/cms.cern.ch/crab3/crab_standalone.sh
+voms-proxy-init -voms cms
 crab getoutput -d <directoryName>
 ```
 
 If crab getoutput doesn't work somehow, you need to open a new terminal and run the script ./gfalListDataFile.sh
+```
+voms-proxy-init -voms cms
+./gfalCopyDataFile.sh NMSSM_XToYHTo4b_MX-1000_TuneCUETP8M1_13TeV-madgraph-pythia8 histo nchc syu
+```
