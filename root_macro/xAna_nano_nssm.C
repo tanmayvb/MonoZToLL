@@ -43,6 +43,32 @@ void xAna_nano_nssm(std::string filename, std::string outputFileName="histo.root
   
   //get TTree from file ...  
   TreeReader data(inputFiles,"Events");
+  TTree* thisTree = data.GetTree();
+
+  // check if this tree has the required branches for trigger
+  std::vector<std::string> trigNames;
+  trigNames.push_back("HLT_PFHT800");
+  trigNames.push_back("HLT_PFHT900");
+  trigNames.push_back("HLT_PFHT650_WideJetMJJ900DEtaJJ1p5");
+  trigNames.push_back("HLT_AK8PFJet360_TrimMass30");
+  trigNames.push_back("HLT_AK8DiPFJet280_200_TrimMass30_BTagCSV_p20");
+  trigNames.push_back("HLT_AK8PFHT650_TrimR0p1PT0p03Mass50");
+  trigNames.push_back("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50");
+
+  std::vector<std::string> tempNames = trigNames;
+
+  // first check if the branch exists or not
+  for(unsigned int itrig=0; itrig < tempNames.size(); itrig++)
+    {
+      TBranch* thisBranch = thisTree->FindBranch(tempNames[itrig].data());
+      if(thisBranch==NULL){
+	cerr << "Branch: " << tempNames[itrig] << " is not present in the tree! " << endl;
+	trigNames.erase(trigNames.begin()+itrig);
+      }
+    }
+
+  unsigned int nTrigs= trigNames.size();
+  cout << "Available number of trigger paths = " << nTrigs << endl;
   Long64_t nTotal=0;
   Long64_t nPass[20]={0};
   const unsigned int nLabels=21;
@@ -56,6 +82,7 @@ void xAna_nano_nssm(std::string filename, std::string outputFileName="histo.root
     label[i] = Form("Cut %d",i);
   }
 
+  // start looping over events
   for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
 
     if (jEntry % 50000 == 0)
@@ -67,19 +94,10 @@ void xAna_nano_nssm(std::string filename, std::string outputFileName="histo.root
     //1. trigger 
 
     Bool_t passTrigger=false;
-    const unsigned int nTrigs=7;
-    Bool_t passTrig[nTrigs] = {data.GetBool("HLT_PFHT800"),
-			 data.GetBool("HLT_PFHT900"),
-			 data.GetBool("HLT_PFHT650_WideJetMJJ900DEtaJJ1p5"),
-			 data.GetBool("HLT_AK8PFJet360_TrimMass30"),
-			 data.GetBool("HLT_AK8DiPFJet280_200_TrimMass30_BTagCSV_p20"),
-			 data.GetBool("HLT_AK8PFHT650_TrimR0p1PT0p03Mass50"),
-			 data.GetBool("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50")
-    };
-
+      
     for(unsigned int itrig=0; itrig< nTrigs; itrig++)
       {
-	if(passTrig[itrig]==true)
+	if(data.GetBool(trigNames[itrig].data())==true)
 	  {
 	    passTrigger=true;
 	    break;
