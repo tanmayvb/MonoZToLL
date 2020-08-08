@@ -1,7 +1,7 @@
 ```
-git clone git@github.com:syuvivida/XtoYH.git
+git clone git@github.com:syuvivida/MonoZToLL.git
 
-cd XtoYH
+cd MonoZToLL
 ```
 
 ## For commit later
